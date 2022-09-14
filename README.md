@@ -11,4 +11,5 @@
  - Bogus (for sample data)
  - AutoMapper  
  - EntityFremawork Core 6 (code first)
+ - SwaggerUi
  
