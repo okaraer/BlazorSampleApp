@@ -1,0 +1,169 @@
+﻿@page "/firmalar"
+@using System.Text
+
+
+
+
+<PageTitle>Firma Listesi</PageTitle>
+
+<h1>Firma Listesi</h1>
+
+<p>Sisteme kayıtlı tüm firmaların listelendiği sayfa</p>
+
+<style>
+    .table tr > th, .table tr > td {
+        word-wrap: break-word;
+        white-space: nowrap !important;
+    }
+
+</style>
+
+<div class="alert alert-danger" role="alert">
+    Veriler sahte datadır.Lütfen dikkate almayımız!
+</div>
+
+<div class="container-fluid">
+
+
+    <div class="row g-3 mt-3 mb-3">
+        <div class="col-5">
+            <input @bind-value="Search" class="form-control" type="text" placeholder="Çoklu arama yapabilirsiniz...">
+        </div>
+        <div class="col-1">
+            <button class="btn btn-outline-success w-100" @onclick="SearchClick">Ara</button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+
+            @if (firmaList == null)
+            {
+                <p><em>Bekleyiniz...</em></p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap" scope="col">İşlemler</th>
+                                <th class="text-nowrap" scope="col">Firma adı</th>
+                                <th class="text-nowrap" scope="col">Yetki durumu</th>
+                                <th class="text-nowrap" scope="col">Vize bitiş tarihi </th>
+                                <th class="text-nowrap" scope="col">Sertifika bitiş tarihi</th>
+                                <th class="text-nowrap" scope="col">Adres</th>
+                                <th class="text-nowrap" scope="col">Telefon</th>
+                                <th class="text-nowrap" scope="col">Eposta</th>
+                                <th class="text-nowrap" scope="col">Performans puanı</th>
+                                <th class="text-nowrap" scope="col">Gaz açım yüzdesi </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var firma in firmaList)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="btn btn-warning btn-sm" href="Firma/Detay/@firma.Id">Detay</a>
+                                    </td>
+                                    <td class="text-nowrap">@firma.FirmaAdi</td>
+                                    <td>
+                                        @{
+                                            if (firma.IsYetkiliFirma)
+                                            {
+                                                <span class="badge p-2 bg-success ">Yetkili</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge p-2 bg-danger">Yetkisiz</span>
+                                            }
+                                        }
+
+                                    </td>
+                                    <td>@firma.VizeBitisTarihi.Value.ToString("dd.MM.yyy HH:MM")</td>
+                                    <td>@firma.SertifikaBitisTarihi.Value.ToString("dd.MM.yyy HH:MM")</td>
+                                    <td>@firma.Adres</td>
+                                    <td>@firma.Telefon</td>
+                                    <td>@firma.Eposta</td>
+                                    <td>@Math.Round(firma.PerformansPuani,1)</td>
+                                    <td>@Math.Round(firma.GazAcimYuzdesi,1)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <ul class="pagination">
+            @for (var i = 1; i <= TotalPages; i++)
+            {
+                var tempint = i;
+                <li class="page-item @(i == CurrentPage ? "active" : "")">
+                    <button type="button" @onclick="(() => this.PageChangeClick(tempint))" class="page-link">@i</button>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+
+@code {
+    private IEnumerable<FirmaDto>? firmaList;
+    [Parameter] public int Page { get; set; } = 1;
+    public int CurrentPage { get; set; } = 1;
+    public int Count { get; set; }
+    public int PageSize { get; set; } = 5;
+    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+    public string Search { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Page = 1;
+        await BindGrid();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await BindGrid();
+    }
+
+    private async Task BindGrid()
+    {
+        var query = new InputDto
+            {
+                Search = Search,
+                PageNumber = (Page == 0 ? 1 : Page),
+                PageSize = PageSize
+            };
+
+        var json = JsonConvert.SerializeObject(query);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        var result = await Http.PostAsync("Firma/GetAll", data);
+        var pageResult = await result.Content.ReadFromJsonAsync<PageResult<FirmaDto>>();
+        firmaList = pageResult.Items;
+        Count = pageResult.TotalCount;
+        CurrentPage = Page;
+    }
+
+
+
+    protected async Task PageChangeClick(int page)
+    {
+        Page = page;
+        await BindGrid();
+    }
+
+    protected async Task SearchClick()
+    {
+        await BindGrid();
+        CurrentPage = Page;
+    }
+
+
+}

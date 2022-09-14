@@ -1,0 +1,236 @@
+﻿@page "/Firma/Detay/{Id:int}"
+
+
+
+
+<PageTitle>Firma Detay Listesi</PageTitle>
+
+<style>
+    :root {
+        --main-bg-color: #f9faff;
+        --main-yesil-color: #14c55b;
+        --main-mavi-color: #15bfd8;
+    }
+
+    .color-mavi {
+        color: var(--main-mavi-color) !important;
+    }
+
+    .color-yesil {
+        color: var(--main-yesil-color) !important;
+    }
+
+    .bg-color-yesil {
+        background-color: var(--main-yesil-color) !important;
+    }
+
+    .list-group-item p {
+        margin-bottom: 0;
+    }
+
+    .list-group-item small {
+        font-weight: bold;
+    }
+</style>
+
+
+@if (firmaDetay == null)
+{
+    <p><em>Bekleyiniz...</em></p>
+}
+else
+{
+
+
+    <div class="container-fluid mb-5">
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="d-flex ">
+                    <img class="m-auto" height="100" src="/img/logo.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="row pt-5">
+            <div class="col-12">
+                <div class="bg-white border border-1 shadow rounded border-light p-3">
+                    <h4 class="text-center mb-0 color-mavi">@firmaDetay.Firma.FirmaAdi </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-12 ">
+                @if (@firmaDetay.Firma.IsYetkiliFirma)
+                {
+                    <div class="bg-color-yesil border border-1 shadow rounded border p-3">
+                        <h5 class="text-center text-white mb-0 ">YETKİLİ FİRMA</h5>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="bg-danger border border-1 shadow rounded border p-3">
+                        <h5 class="text-center text-white mb-0 ">YETKİSİZ FİRMA</h5>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="bg-white border border-1 rounded shadow p-3">
+                    <div class="text-center">
+                        <h3 class="text-center color-yesil"> @Math.Round(firmaDetay.Firma.PerformansPuani,1)</h3>
+                        <p class="text-muted">Firma <br> Performans Puanı</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="bg-white border border-1 rounded shadow p-3">
+                    <div class="text-center">
+                        <h3 class="color-yesil">@Math.Round(firmaDetay.Firma.GazAcimYuzdesi,1) </h3>
+                        <p class="text-muted">İlk Seferde <br> Gaz Açma Yüzdesi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-0">Firma Bilgileri</h5>
+            </div>
+            <div class="col-12">
+                <div class="card border border-1 rounded shadow p-3">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <small>ADRES :</small>
+                            <p>@firmaDetay.Firma.Adres</p>
+                        </li>
+                        <li class="list-group-item">
+                            <small>ŞEHİR :</small>
+                            <p>İZMİR</p>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-8">
+                                    <small>TELEFON :</small>
+                                    <p>@firmaDetay.Firma.Telefon</p>
+                                </div>
+                                <div class="col-4 ">
+                                    <div class="d-flex flex-column">
+                                        <a class="btn align-items-center align-content-center btn-outline-info rounded-pill"
+                                       href="tel:@firmaDetay.Firma.Telefon">Ara</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-8">
+                                    <small>E-POSTA :</small>
+                                    <p>@firmaDetay.Firma.Eposta</p>
+                                </div>
+                                <div class="col-4">
+                                    <div class="d-flex flex-column">
+                                        <a class="btn align-items-center align-content-center btn-outline-info rounded-pill"
+                                       href="mailto:@firmaDetay.Firma.Eposta">E-Posta Gönder</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+                        @*  <li class="list-group-item">
+                    <small>SAHİBİ / ORTAĞI :</small>
+                    <p>Ahmet Mehmet</p>
+                    </li>
+                    <li class="list-group-item">
+                    <div class="row">
+                    <div class="col-8">
+                    <small>SAHİBİ / ORTAĞI TELEFON :</small>
+                    <p>0 555 666 22 55</p>
+                    </div>
+                    <div class="col-4 ">
+                    <div class="d-flex flex-column">
+                    <a class="btn align-items-center align-content-center btn-outline-info rounded-pill"
+                    href="tel:5645645644">Ara</a>
+
+                    </div>
+                    </div>
+                    </div>
+                    </li>*@
+                        <li class="list-group-item">
+                            <small>VİZE BİTİŞ TARİHİ :</small>
+                            <p>@firmaDetay.Firma.VizeBitisTarihi.Value.ToString("dd.MM.yyy")</p>
+                        </li>
+                        <li class="list-group-item">
+                            <small>SERTİFİKA BİTİŞ TARİHİ :</small>
+                            <p>@firmaDetay.Firma.SertifikaBitisTarihi.Value.ToString("dd.MM.yyy")</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-6">
+            <div class="card-body">
+                <h5 class="card-title text-muted mb-0">Personel Bilgileri</h5>
+            </div>
+            <div class="col-12">
+                <div class="row">
+
+                    @foreach (var item in firmaDetay.PersonelListesi)
+                    {
+                        <div class="col-3 mb-4">
+                            <div class="card shadow">
+                                <img class="card-img-top" src="/img/personel.jpg"
+                             alt="Card image" style="width:100%">
+                                <div class="card-body text-center">
+                                    <h4 class="card-title mb-0">@item.AdiSoyadi</h4>
+                                    @if (item.IsFirmaYetkilisi)
+                                    {
+                                        <p class="card-text text-muted">
+                                            <span class='text-success fw-bold'>Firma Yetkilisi</span> / @item.Unvani
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="card-text text-muted">@item.Unvani</p>
+                                    }
+                                    <small class="card-text">@item.TelefonNumarisi </small>
+                                    <small class="card-text">@item.Eposta </small>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+}
+
+@code {
+
+    private FirmaDetayDto? firmaDetay;
+
+    [Inject] public IJSRuntime JsRuntime { get; set; }
+    [Inject] NavigationManager NavManager { get; set; }
+    [Parameter] public int Id { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        firmaDetay = await Http.GetFromJsonAsync<FirmaDetayDto>($"firma/Detay?firmaId={Id}");
+
+    }
+}
